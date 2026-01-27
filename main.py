@@ -203,7 +203,7 @@ def main(page: ft.Page):
 
     render()
 
-if __name__ == "__main__":
+if __name__ == "__main__":  
     ft.run(main)
 
 # C:\Users\ariel\Desktop\1\0\bfamily
