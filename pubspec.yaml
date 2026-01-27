@@ -1,15 +1,12 @@
 name: family
-description: A Flet application
+description: Flet app
 publish_to: "none"
-
-version: 1.0.0+1
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
+  flet: ^0.80.4
 
-flutter:
-  uses-material-design: true
+dependency_overrides:
+  file_picker: 5.2.10
