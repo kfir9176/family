@@ -1,6 +1,10 @@
 import flet as ft
-from family_data import families
-from models import Person, UIItem
+#from database import PEOPLE, FAMILIES
+from models import Person
+from data_loader import load_people, load_families
+
+PEOPLE = load_people()
+FAMILIES = load_families()
 
 def main(page: ft.Page):
     page.title = "ספר משפחה"
@@ -9,7 +13,7 @@ def main(page: ft.Page):
 
     # ---------- STATE ----------
     state = {
-        "screen": "all",      # all | families | family
+        "screen": "all", 
         "family_id": "all",
         "search": ""
     }
@@ -27,6 +31,8 @@ def main(page: ft.Page):
     def render():
         if state["screen"] == "all":
             render_all()
+        elif state["screen"] == "search_all":
+            render_search_all()
         elif state["screen"] == "families":
             render_families()
         elif state["screen"] == "family":
@@ -34,61 +40,71 @@ def main(page: ft.Page):
 
         page.update()
 
+
     def render_all():
         family_list_view.controls.clear()
         search_field.visible = True
         family_list_view.controls.append(search_field)
 
-        for item in families["all"]:
-            if isinstance(item, Person):
-                text = f"{item.name} {item.family}"
-                if state["search"] in text:
-                    add_person_card(item)
+        for person in PEOPLE.values():
+            full_name = f"{person.name} {person.family}"
+            if state["search"] in full_name:
+                add_person_card(person)
 
-    def render_families():
+    def render_search_all():
         family_list_view.controls.clear()
-        search_field.visible = False
+        search_field.visible = True   
+      
+        family_list_view.controls.append(ft.Text("חיפוש כללי (שם, כתובת, יומולדת...)", size=20, weight="bold"))
+        family_list_view.controls.append(search_field)
+      
+        if not state["search"]:
+            family_list_view.controls.append(ft.Text("הקלד משהו כדי להתחיל לחפש...", italic=True, color="grey"))
+            return
+        term = state["search"]
+        for person in PEOPLE.values():
+            found_in = None
+            if term in person.name or term in person.family:
+                found_in = None
+            elif term in person.address:
+                found_in = f"כתובת: {person.address}"
+            elif term in person.birthday:
+                found_in = f"יום הולדת: {person.birthday}"
+            elif term in person.phone:
+                found_in = f"טלפון: {person.phone}"
 
+            # אם מצאנו התאמה באחד השדות
+            if found_in is not None or term in person.name or term in person.family:
+                add_person_card(person, extra_info=found_in)
+
+    # פותחת רשימה של משפחה ספציפית 
+    def render_family(family_id): 
+        family_list_view.controls.clear() 
+        family_list_view.controls.append( 
+            ft.Row([ ft.TextButton( "<- חזרה", 
+                on_click=lambda _: go_all(), 
+                style=ft.ButtonStyle(color=ft.Colors.BLUE_700))], 
+                alignment=ft.MainAxisAlignment.START ) ) 
+        family = FAMILIES.get(family_id)
+        if not family:
+            return
         family_list_view.controls.append(
-            ft.Text("משפחות", size=30, weight="bold")
-        )
-
-        for fid, items in families.items():
-            if fid == "all":
-                continue
-            for item in items:
-                if isinstance(item, UIItem) and item.type == "main_title":
-                    family_list_view.controls.append(
-                        ft.Container(
-                            content=ft.Text(item.title, size=18),
-                            padding=10,
-                            border=ft.Border.all(1),
-                            border_radius=8,
-                            ink=True,
-                            on_click=lambda e, f=fid: open_family(f)
-                        )
-                    )
-                    break
-
-    def render_family(fid):
-        family_list_view.controls.clear()
-        search_field.visible = False
-
-        family_list_view.controls.append(
-            ft.Row(
-                [ft.TextButton("← חזרה", on_click=lambda _: go_all())],
-                alignment=ft.MainAxisAlignment.START, rtl=True
+            ft.Text(
+                family["title"], size=40, weight="bold"
             )
         )
-
-        for item in families.get(fid, []):
-            if isinstance(item, UIItem):
-                size = 30 if item.type == "main_title" else 20
-                family_list_view.controls.append(
-                    ft.Text(item.title, size=size, weight="bold")
-                )
-            elif isinstance(item, Person):
-                add_person_card(item)
+        # ===== הורים =====
+        family_list_view.controls.append(
+            ft.Text("הורים:", size=22, weight="bold"))
+        for parent_id in family["parents"]:
+            add_person_card(PEOPLE[parent_id])
+        # ===== ילדים =====
+        family_list_view.controls.append(
+            ft.Text("ילדים:", size=22, weight="bold"))
+        for child_id in family["children"]:
+            add_person_card(PEOPLE[child_id]) 
+        page.update()
+         
 
     # ---------- ACTIONS ----------
     def go_all():
@@ -101,16 +117,15 @@ def main(page: ft.Page):
         state["family_id"] = fid
         render()
 
-    def open_families():
-        state["screen"] = "families"
-        render()
-
     def update_search(text):
         state["search"] = text
         render()
 
+
     # ---------- PERSON CARD ----------
-    def add_person_card(person):
+    def add_person_card(person, extra_info=None):
+        info_text = ft.Text(extra_info, size=12, color="grey") if extra_info else ft.Container()
+        
         family_list_view.controls.append(
             ft.Container(
                 padding=10,
@@ -120,12 +135,15 @@ def main(page: ft.Page):
                 on_click=lambda _: show_details(person),
                 content=ft.Row([
                     ft.Icon(ft.Icons.PERSON),
-                    ft.Text(f"{person.name} {person.family}", expand=True),
+                    ft.Column([
+                        ft.Text(f"{person.name} {person.family}"),
+                        info_text
+                    ], expand=True, spacing=2),
                     ft.IconButton(
                         ft.Icons.HOME,
                         icon_color="orange",
-                        on_click=lambda e, f=person.has_family_id: open_family(f)
-                    ) if person.has_family_id else ft.Container()
+                        on_click=lambda e, f=person.family_id: open_family(f)
+                    ) if person.family_id else ft.Container()
                 ],
                 rtl=True
                 )
@@ -135,12 +153,11 @@ def main(page: ft.Page):
     # ---------- DIALOG ----------
     def show_details(p):
         dlg = ft.AlertDialog(
-            title=ft.Text(f"{p.name} {p.family}", weight="bold"),
+            title=ft.Text(f"{p.name} {p.family}", weight="bold", rtl=True),
             content=ft.Column([
-                ft.Text(f"גיל: {p.age}"),
-                ft.Text(f"טלפון: {p.phone}"),
                 ft.Text(f"כתובת: {p.address}"),
-                ft.Text(f"יום הולדת: {p.birthday}")
+                ft.Text(f"יום הולדת: {p.birthday}"),
+                ft.Text(f"טלפון: {p.phone}"),
             ],rtl=True, tight=True),
             actions=[ft.TextButton("סגור", on_click=lambda e: close_dialog(dlg))]
         )
@@ -156,25 +173,24 @@ def main(page: ft.Page):
     def on_nav_change(e):
         index = e.control.selected_index
         if index == 0:
+            state["search"] = ""
             go_all()
         elif index == 1:
-            open_families()
-        elif index == 2:
-            open_family("gadasi_parents")
-        elif index == 3:
-            open_family("jamil_parents")
-        elif index == 4:
-            open_family("bahur_parents")
+            state["screen"] = "search_all"
+            state["search"] = ""
+            render()
+        #elif index == 2:
+         #   state["screen"] = "families"
+          #  render()
+
 
     nav = ft.NavigationRail(
         selected_index=0,
         label_type=ft.NavigationRailLabelType.ALL,
         destinations=[
             ft.NavigationRailDestination(icon=ft.Icons.PEOPLE, label="כולם"),
-            ft.NavigationRailDestination(icon=ft.Icons.FOLDER, label="משפחות"),
-            ft.NavigationRailDestination(icon=ft.Icons.HOME, label="גדסי"),
-            ft.NavigationRailDestination(icon=ft.Icons.HOME, label="ג'מיל"),
-            ft.NavigationRailDestination(icon=ft.Icons.HOME, label="בחור"),
+            ft.NavigationRailDestination(icon=ft.Icons.SEARCH, label="חיפוש כללי"),
+            #ft.NavigationRailDestination(icon=ft.Icons.FOLDER, label="משפחות"),
         ],
         on_change=on_nav_change
     )

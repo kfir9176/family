@@ -1,0 +1,7 @@
+family_id,title,parents,children
+gadasi_parents,משפחת גדסי (אמיתי),"amiti_gadasi;yirat_gadasi","elia_gadasi;bnia_gadasi;malachi_gadasi"
+bahur_parents,משפחת בחור (איתן),"eitan_bahur;asnat_bahur","oria_bahur;ariel_bahur;talia_bahur;shira_bahur;amichai_bahur;adi_bahur;elroi_bahur"
+jamil_parents,משפחת ג'מיל (יוסף),"yosef_jamil;efrat_jamil","neria_jamil;toher_jamil;ayelet_jamil;hananel_jamil,david_jamil;shilo_jamil"
+neria_jamil_parents,משפחת ג'מיל (נריה),"neria_jamil;yahel_jamil","moshe_jamil"
+tohar_zadok_parents,משפחת צדוק (טוהר),"netanel_zadok;tohar_zadok","yosef_zadok"
+

@@ -1,0 +1,28 @@
+id,name,family,birthday,phone,address,family_id
+amiti_gadasi,אמיתי,גדסי,,,"עמוס דניאלי 4",gadasi_parents
+yirat_gadasi,יראת,גדסי,,,"עמוס דניאלי 4",gadasi_parents
+elia_gadasi,אליה,גדסי,,,"עמוס דניאלי 4",
+bnia_gadasi,בניה,גדסי,,,"עמוס דניאלי 4",
+malachi_gadasi,מלאכי,גדסי,,,"עמוס דניאלי 4",
+eitan_bahur,איתן,בחור,"ד' שבט",0507410323,"נתיבות שליו 6",bahur_parents
+asnat_bahur,אסנת,בחור,"ז' כסלו",0507410322,"נתיבות שליו 6",bahur_parents
+oria_bahur,אוריה יעל,בחור,"כ""ו אדר",,"שדרות הורד",
+ariel_bahur,אריאל,בחור,"ו' שבט",0556658492,"נתיבות שליו 6",
+talia_bahur,טליה,בחור,"כ""ז כסלו",,"נתיבות שליו 6",
+shira_bahur,שירה,בחור,"כ""א טבת",,"נתיבות שליו 6",
+amichai_bahur,עמיחי מרדכי,בחור,"כ""א אדר א",,"נתיבות שליו 6",
+adi_bahur,עדי,בחור,"ג' אדר",,"נתיבות שליו 6",
+elroi_bahur,אלרואי דוד,בחור,"כ""א אייר",,"נתיבות שליו 6",
+ofir_gadasi,אופיר,גדסי,,,,
+efrat_jamil,אפרת,ג'מיל,,,"בית אל הרימון",jamil_parents
+yosef_jamil,יוסף,ג'מיל,,,"בית אל הרימון",jamil_parents
+neria_jamil,נריה,ג'מיל,,,"גבעת אסף",neria_jamil_parents
+yahel_jamil,יהל,ג'מיל,,,"גבעת אסף",neria_jamil_parents
+moshe_jamil,משה,ג'מיל,,,"גבעת אסף",
+ayelet_jamil,איילת חן,ג'מיל,,,,
+hananel_jamil,חננאל,ג'מיל,,,,
+david_jamil,דוד יוחאי,ג'מיל,,,,
+shilo_jamil,שילה,ג'מיל,,,"בית אל",
+tohar_zadok,טוהר,צדוק,,,"הר ברכה",tohar_zadok_parents
+netanel_zadok,נתנאל,צדוק,,,"הר ברכה",tohar_zadok_parents
+yosef_zadok,יוסף,צדוק,,,"הר ברכה",
