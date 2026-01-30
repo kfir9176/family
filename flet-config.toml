@@ -1,0 +1,6 @@
+[package]
+product = "משפחה"
+org = "com.bahur.familyapp"
+
+[android]
+icon = "assets/icon.png"  # וודא שהקובץ נמצא בתיקיית assets

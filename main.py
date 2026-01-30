@@ -32,6 +32,7 @@ def main(page: ft.Page):
         if state["screen"] == "all":
             render_all()
         elif state["screen"] == "search_all":
+            state["search"] = ""
             render_search_all()
         elif state["screen"] == "families":
             render_families()
@@ -184,12 +185,11 @@ def main(page: ft.Page):
           #  render()
 
 
-    nav = ft.NavigationRail(
+    nav = ft.NavigationBar(
         selected_index=0,
-        label_type=ft.NavigationRailLabelType.ALL,
         destinations=[
-            ft.NavigationRailDestination(icon=ft.Icons.PEOPLE, label="כולם"),
-            ft.NavigationRailDestination(icon=ft.Icons.SEARCH, label="חיפוש כללי"),
+            ft.NavigationBarDestination(icon=ft.Icons.PEOPLE, label="כולם"),
+            ft.NavigationBarDestination(icon=ft.Icons.SEARCH, label="חיפוש כללי"),
             #ft.NavigationRailDestination(icon=ft.Icons.FOLDER, label="משפחות"),
         ],
         on_change=on_nav_change
@@ -214,7 +214,7 @@ def main(page: ft.Page):
         page.update()
 
     page.add(
-        ft.Row([nav, ft.VerticalDivider(width=1), family_list_view], expand=True)
+        ft.Column([family_list_view, ft.Divider(height=1), nav], expand=True)
     )
 
     render()
