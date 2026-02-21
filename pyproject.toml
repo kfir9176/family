@@ -1,0 +1,3 @@
+[tool.flet]
+icon = "assets/icon.png"
+assets = ["assets"]
